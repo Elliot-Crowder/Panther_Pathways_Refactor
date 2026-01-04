@@ -20,7 +20,7 @@
  *
  */
 
-class graph {
+export class graph {
   constructor() {
     this.nodes = [];
     this.numNodes = 0;

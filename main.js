@@ -1,14 +1,16 @@
 //Event listener reads the svg into memory and loads it into the html as apart of the svg container
+
+import { graph } from "./graph.js";
 document.addEventListener("DOMContentLoaded", () => {
   fetch("Untitled.svg")
     .then((response) => response.text())
-    .then((svgContent) => {
+    .then(async (svgContent) => {
       console.log("svg content");
       //   console.log(svgContent);
       console.log("end content");
       const parser = new DOMParser();
       const fileContent = parser.parseFromString(svgContent, "image/svg+xml");
-      loadNodes(fileContent);
+      await loadNodes(fileContent);
       const svg = fileContent.querySelector("svg");
       console.log(svg);
 
@@ -26,11 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function loadNodes(fileContent) {
+async function loadNodes(fileContent) {
   let index = 1;
   let node;
 
+  let mapGraph = new graph();
+
+  //while loop iterates through all svg node components and adds the nodes to memory as a part of a graph
   while ((node = fileContent.getElementById(`node-${index}`))) {
+    mapGraph.createNode(
+      node.getAttribute("cx"),
+      node.getAttribute("cy"),
+      node.id
+    );
     console.log({
       id: node.id,
       cx: node.getAttribute("cx"),
@@ -39,4 +49,13 @@ function loadNodes(fileContent) {
     });
     index++;
   }
+
+  //load edge data
+  const edges = await fetch("./edges.json").then((response) => response.json());
+  const TEMPORARY_VALUE = 1;
+  for (let edge of edges.edges) {
+    mapGraph.addEdge(TEMPORARY_VALUE, edge.from, edge.to);
+  }
+  console.log(mapGraph);
+  return graph;
 }

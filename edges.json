@@ -1,0 +1,6 @@
+{
+  "edges": [
+    { "from": "node-1", "to": "node-2" },
+    { "from": "node-2", "to": "node-3" }
+  ]
+}
