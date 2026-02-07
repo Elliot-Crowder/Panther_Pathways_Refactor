@@ -137,7 +137,7 @@ function onZoom(e) {
   const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
   let newScale = currentScale * zoomFactor;
 
-  newScale = Math.max(0.5, Math.min(4, newScale));
+  newScale = Math.max(0.5, Math.min(2, newScale));
   const scaleDifference = newScale - currentScale;
   const offsetX = -(x * scaleDifference);
   const offsetY = -(y * scaleDifference);
