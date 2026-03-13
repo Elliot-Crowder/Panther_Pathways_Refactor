@@ -1,0 +1,14 @@
+{
+	"nodes": {
+		"node__name": {
+			"edges": [],
+			"node-type": "",
+			"position": {}
+		},
+		"node-STS2": {
+			"edges": [],
+			"node-type": "",
+			"position": { "x": 921, "y": 921 }
+		}
+	}
+}
