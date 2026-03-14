@@ -268,9 +268,10 @@ async function loadNodes(fileContent) {
       );
     }
 
-    mapGraph.addEdge(edgeWeight, edge.from, edge.to, isDirected);
+    mapGraph.createEdge(edgeWeight, edge.from, edge.to, isDirected);
   }
   console.log(mapGraph);
+
   return mapGraph;
 }
 export const PathfindingAPI = {

@@ -24,7 +24,8 @@ export class graph {
 	constructor() {
 		this.nodes = [];
 		this.numNodes = 0;
-		this.edges = [];
+		this.edgeMap = new Map();
+
 	}
 
 	getNodes() {
@@ -91,16 +92,45 @@ export class graph {
 		return neighborNodes;
 	}
 
-	addEdge(weight, node1Name, node2Name, directed) {
-		//add duplicate checker?
-		//we should assume that nodes have unique names and that weight is not a key identifier
+	// addEdge(weight, node1Name, node2Name, directed) {
+	// 	//add duplicate checker?
+	// 	//we should assume that nodes have unique names and that weight is not a key identifier
+	// 	const node1 = this.getNode(node1Name);
+	// 	const node2 = this.getNode(node2Name);
+	// 	const newEdge = new graphEdge(weight, node1, node2, directed);
+	// 	node1.addEdge(newEdge);
+	// 	node2.addEdge(newEdge);
+	// 	this.edges.push(newEdge);
+	// }
+
+	createEdge(weight, node1Name, node2Name, directed) {
+
 		const node1 = this.getNode(node1Name);
 		const node2 = this.getNode(node2Name);
-		const newEdge = new graphEdge(weight, node1, node2, directed);
-		node1.addEdge(newEdge);
-		node2.addEdge(newEdge);
-		this.edges.push(newEdge);
+		
+		let key;
+
+		if (directed) {
+			key = `${node1Name}->${node2Name}`;
+  			} 
+		else {
+    		const sorted = [node1Name, node2Name].sort();
+    		key = `${sorted[0]}<-->${sorted[1]}`;
+ 		 }
+
+		 if (this.edgeMap.has(key)) {
+			console.log("Dupe edge: ", key);
+			return;
+		 }
+
+		 const newEdge = new graphEdge(weight, node1, node2, directed);
+
+		 node1.addEdge(newEdge);
+		 node2.addEdge(newEdge);
+		 
+		 this.edgeMap.set(key, newEdge);
 	}
+
 	getEdges() {
 		return this.edges;
 	}
