@@ -7,14 +7,80 @@ let canvasHeight;
 let canvasWidth;
 let scale = 1;
 let myGraph;
+
+async function loadNodes(filePath, graph, canvas) {
+  //Function loades nodes defined at *filePath and adds them to the *graph object
+  //filePath needs to be a valid path to a properly formatted json file.
+  //canvas is the svg element that physical nodes will be attached to
+  const data = await fetch(filePath).then((response) => response.json());
+  const nodes = data.nodes;
+  const nodeGroup = canvas.querySelector("#nodes");
+  //iterate over json structure in order to add all nodes into graph in memory
+  for (const [nodeName, nodeData] of Object.entries(nodes)) {
+    console.log(nodeData, nodeName);
+    const position = nodeData.position;
+    const newNode = graph.createNode(position.x, position.y, nodeName);
+    
+
+    placeNode(nodeGroup, newNode, 2);
+    }
+    
+    loadEdges(filePath, graph);
+
+    console.log(graph);
+  return graph;
+}
+
+async function loadEdges(filePath, graph) {
+  const data = await fetch(filePath).then((response) => response.json());
+  const edges = data.edges;
+
+    for (const edge of edges) {
+      console.log(edge);
+      console.log(edge.from);
+       let edgeWeight;
+       let isDirected = false;
+    if (edge.isVirtual) {
+      isDirected = true;
+      edgeWeight = 0;
+    } else {
+      console.log(edge.from);
+      console.log(edge.to);
+      edgeWeight = distance(
+        graph.getNode(edge.from),
+        graph.getNode(edge.to),
+      );
+    }
+    console.log(isDirected);
+      graph.createEdge(edgeWeight, edge.from, edge.to, isDirected);
+  }
+  return graph;
+}
+
+function placeNode(container, nodeData, radius) {
+  //Function receives three arguments: Container, which is the svg element that the node will be parented to,
+  //nodeData, which is a graphNode object containing node information, and radius
+  const node = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  node.setAttribute("id", nodeData.getName());
+  node.setAttribute("cx", nodeData.xCoord);
+  node.setAttribute("cy", nodeData.yCoord);
+  node.setAttribute("r", radius);
+  node.setAttribute("fill", "#ff6161");
+  container.appendChild(node);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  //main entrypoint
   fetch("vector_map.svg")
     .then((response) => response.text())
     .then(async (svgContent) => {
       const parser = new DOMParser();
       const fileContent = parser.parseFromString(svgContent, "image/svg+xml");
-      myGraph = await loadNodes(fileContent);
+      // myGraph = await loadNodes(fileContent);
+      myGraph = new graph();
+
       const svg = fileContent.querySelector("svg");
+      loadNodes("db.json", myGraph, svg);
       canvasHeight = svg.height.baseVal.value;
       canvasWidth = svg.width.baseVal.value;
       console.log(svg);
@@ -148,10 +214,11 @@ function onZoom(e) {
   const newPanY = oldPanY + offsetY;
 
   scale = newScale;
-  const {
-    x: constrainedX,
-    y: constrainedY
-  } = constrainPan(newPanX, newPanY, newScale);
+  const { x: constrainedX, y: constrainedY } = constrainPan(
+    newPanX,
+    newPanY,
+    newScale,
+  );
   document
     .getElementById("main")
     .setAttribute(
@@ -232,48 +299,6 @@ function distance(p1, p2) {
   return Math.sqrt(sumOfSquares);
 }
 
-async function loadNodes(fileContent) {
-  let index = 1;
-  let mapGraph = new graph();
-
-  const nodes = fileContent.querySelectorAll("circle");
-  //while loop iterates through all svg node components and adds the nodes to memory as a part of a graph
-  for (const node of nodes) {
-    if (node.id.includes("node")) {
-      mapGraph.createNode(
-        node.getAttribute("cx"),
-        node.getAttribute("cy"),
-        node.id,
-      );
-    } else {
-      continue;
-    }
-  }
-  console.log(mapGraph);
-  //load edge data
-  //DO WE NEED TO ALTER THE CODE to PREVEnt DUPLICATE EDGES FROM BEING CREATED???
-  //EX: It's a problem if we have an edge from a to b and also from b to a because those are the same
-  const edges = await fetch("./data/edges.json").then((response) => response.json());
-  for (let edge of edges.edges) {
-    let edgeWeight;
-    let isDirected = false;
-    if (edge.type === "virtual") {
-
-      isDirected = true;
-      edgeWeight = 0;
-    } else {
-      edgeWeight = distance(
-        mapGraph.getNode(edge.from),
-        mapGraph.getNode(edge.to),
-      );
-    }
-
-    mapGraph.createEdge(edgeWeight, edge.from, edge.to, isDirected);
-  }
-  console.log(mapGraph);
-
-  return mapGraph;
-}
 export const PathfindingAPI = {
   findPath(startNode, endNode) {
     if (startNode === endNode) {
@@ -283,40 +308,35 @@ export const PathfindingAPI = {
     console.log("This is prev", prev);
     const path = [];
 
-
     let entranceNodes;
     console.log(myGraph.getNode(endNode).edges, myGraph.getNode(endNode));
 
     entranceNodes = myGraph.getNeighborNodes(myGraph.getNode(endNode));
     console.log(entranceNodes);
 
-
     let min = entranceNodes[0];
     for (const currentNode of entranceNodes) {
-        if (dists[min.getName()] > dists[currentNode.getName()]) {
-          min = currentNode;
-        } else {
-          continue;
-        }
+      if (dists[min.getName()] > dists[currentNode.getName()]) {
+        min = currentNode;
+      } else {
+        continue;
+      }
     }
 
-
-
-
-    // let entranceNodes = [] 
+    // let entranceNodes = []
     // endNode.getOppositeNodes()
 
-          let current = min; 
-          console.log(current);
-      //  it correctly ends at LRCE1 and has a null prev
-      console.log(current.getName(), myGraph.getNode(startNode).getName());
-      while (current.getName() !== myGraph.getNode(startNode).getName()) {
+    let current = min;
+    console.log(current);
+    //  it correctly ends at LRCE1 and has a null prev
+    console.log(current.getName(), myGraph.getNode(startNode).getName());
+    while (current.getName() !== myGraph.getNode(startNode).getName()) {
       // // if (current.includes("vnode")) {
-      //   current = prev[current]; 
+      //   current = prev[current];
 
       //   continue;
       // }
-      
+
       path.unshift(current.getName());
 
       current = myGraph.getNode(prev[current.getName()]);

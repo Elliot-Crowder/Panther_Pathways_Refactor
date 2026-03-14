@@ -1,3 +1,34 @@
-the way the program works is that everything is read from the svg file. The contents are used to both inject the svg into the html so it is rendered and to load information into the back end to actually create the nodes of the graph and the edges.
+*when converting to use json db consider we need to find a way to determine when an edge already exists between two nodes
 
-distances will need to be calculated on the fly most likely.
+
+
+the main design problem is that before we loaded all of the nodes first, then the edges. This alloweede all the nodes to exist, so when adding edges, add edge just had to fetch the nodes that the new edge existed between and add a reference to that edge inside of each nodes edges array.
+
+now the edgfes are contained inside the jjson structure but they are children of a node object. This means that as nodes are created, so are all of that nodes edges, but that edge object cannot be added to the corresponding nodes it connects to from the current node, until that node is actually come across, in which case a duplicate check needes to ensue, and the pre existing edge sehould be fetched and added to the node. 
+
+this makes me think we cannot use just an edges set with key strings because that would work if we just needed to check dupolicates, but the problem is we need to actually fetch the correct edge if it already exists.
+
+This makes me believe we should use a hashmap or dictionary to store edges
+
+
+methods that need to be ammended:
+addEdge
+loadNodes
+addEdges: new function in main
+
+createEdge(from:nodeName, to:nodeName, weight, IsDirected:bool)
+*edge needs to connect actual node objects with a function call to getNode()
+*rather than add edges to an array like we were doing before it needs to add them to a hash map where the key follows a specific format
+*keys are a combination of the from and to nodenames. 
+    - if the node is NOT directed, we lexicographically order the names, via sorting, and put a bidirectional arrow between them ie. "
+    node1<-->node2
+    - in this case node1 comes before node2 lexicographically. 
+    - if the node IS directed, indicated by the boolean isDirected argument, the name should follow a similar format, but the names should
+    NOT be sorted because in this case direction matters. ie node1->node2 is not the same as node2->node1
+*the function will also need to check for duplicates which can be done by checking if a key already exists within the hashmap
+
+
+
+  //IN THE FUTURE, I think we should change the graph to use a dictionary as all nodes have unique names, this way i can also implement
+  //a function get position on the node, and we can use graph.getNode way more efficiently in non O(n) time. Because without functions to get the coordinates
+  //we have to directly reference class attributes

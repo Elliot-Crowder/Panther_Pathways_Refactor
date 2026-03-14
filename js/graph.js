@@ -28,69 +28,71 @@ export class graph {
 
 	}
 
-	getNodes() {
-		return this.nodes;
-	}
+  getNodes() {
+    return this.nodes;
+  }
 
-	getNode(nodeName) {
-		for (const curr_node of this.nodes) {
-			if (curr_node.getName() === nodeName) {
-				return curr_node;
-			}
-		}
-		throw new Error("Node not found!");
-	}
+  getNode(nodeName) {
 
-	getDistanceBetween(node1Name, node2Name) {
-		const node1 = this.getNode(node1Name);
-		const node2 = this.getNode(node2Name);
-		return node1.getDistanceTo(node2);
-	}
+    for (const curr_node of this.nodes) {
+      if (curr_node.getName() === nodeName) {
+        return curr_node;
+      }
+    }
+    throw new Error("Node not found!");
+  }
 
-	createNode(xCoord, yCoord, nodeName) {
-		const newNode = new graphNode(xCoord, yCoord, nodeName);
-		this.nodes.push(newNode);
-		this.numNodes += 1;
-		//console.log(this.nodes);
-		// Later implement test for duplicates
-	}
+  getDistanceBetween(node1Name, node2Name) {
+    const node1 = this.getNode(node1Name);
+    const node2 = this.getNode(node2Name);
+    return node1.getDistanceTo(node2);
+  }
 
-	deleteNode(nodeName) {
-		for (let i = 0; i < this.nodes.length; i++) {
-			if (this.nodes[i].getName() === nodeName) {
-				if (i === this.nodes.length - 1) {
-					this.nodes.pop();
-					this.numNodes -= 1;
-				} else {
-					console.log(this.nodes.length);
-					this.nodes[i] = this.nodes[this.nodes.length - 1];
-					this.nodes.pop();
-					this.numNodes -= 1;
-				}
-			}
-		}
-	}
+  createNode(xCoord, yCoord, nodeName) {
+    const newNode = new graphNode(xCoord, yCoord, nodeName);
+    this.nodes.push(newNode);
+    this.numNodes += 1;
+    //console.log(this.nodes);
+    // Later implement test for duplicates
+    return newNode;
+  }
 
-	getNeighborNodes(node) {
-		let neighborNodes = [];
-		for (let i = 0; i < node.edges.length; i++) {
-			// if (
-			// 	node.edges[i].fromNode.getName() === node.getName() ||
-			// 	node.edges[i].toNode.getName() === node.getName()
-			// ) {
-			// 	neighborNodes.push(node.edges[i].getOppositeNode(node));
-			// } else {
-			// 	console.log("no");
-			// }
+  deleteNode(nodeName) {
+    for (let i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].getName() === nodeName) {
+        if (i === this.nodes.length - 1) {
+          this.nodes.pop();
+          this.numNodes -= 1;
+        } else {
+          console.log(this.nodes.length);
+          this.nodes[i] = this.nodes[this.nodes.length - 1];
+          this.nodes.pop();
+          this.numNodes -= 1;
+        }
+      }
+    }
+  }
 
-			const edge = node.edges[i];
-			const oppositeNode = edge.getOppositeNode(node);
-			if (!edge.directed || edge.fromNode.getName() === node.getName()) { 
-				neighborNodes.push(oppositeNode);
-			}
-		}
-		return neighborNodes;
-	}
+  getNeighborNodes(node) {
+    let neighborNodes = [];
+    for (let i = 0; i < node.edges.length; i++) {
+      // if (
+      // 	node.edges[i].fromNode.getName() === node.getName() ||
+      // 	node.edges[i].toNode.getName() === node.getName()
+      // ) {
+      // 	neighborNodes.push(node.edges[i].getOppositeNode(node));
+      // } else {
+      // 	console.log("no");
+      // }
+
+      const edge = node.edges[i];
+      const oppositeNode = edge.getOppositeNode(node);
+      if (!edge.directed || edge.fromNode.getName() === node.getName()) {
+        neighborNodes.push(oppositeNode);
+      }
+    }
+    return neighborNodes;
+  }
 
 	// addEdge(weight, node1Name, node2Name, directed) {
 	// 	//add duplicate checker?
@@ -118,17 +120,19 @@ export class graph {
     		key = `${sorted[0]}<-->${sorted[1]}`;
  		 }
 
+     if (!this.edgeMap.has(key)) {
+      const newEdge = new graphEdge(weight, node1, node2, directed);
+      node1.addEdge(newEdge);
+      node2.addEdge(newEdge);
+      this.edgeMap.set(key, newEdge);
+      return;
+    }
+
 		 if (this.edgeMap.has(key)) {
 			console.log("Dupe edge: ", key);
 			return;
 		 }
 
-		 const newEdge = new graphEdge(weight, node1, node2, directed);
-
-		 node1.addEdge(newEdge);
-		 node2.addEdge(newEdge);
-		 
-		 this.edgeMap.set(key, newEdge);
 	}
 
 	getEdges() {
@@ -137,105 +141,107 @@ export class graph {
 }
 
 class graphNode {
-	constructor(xCoord, yCoord, nodeName) {
-		this.xCoord = xCoord;
-		this.yCoord = yCoord;
-		this.name = nodeName;
-		this.edges = [];
-	}
+  constructor(xCoord, yCoord, nodeName) {
+    this.xCoord = xCoord;
+    this.yCoord = yCoord;
+    this.name = nodeName;
+    this.edges = [];
+  }
 
-	addEdge(edge) {
-		this.edges.push(edge);
-	}
-	getName() {
-		return this.name;
-	}
-	getDistanceTo(node) {
-		//should this function assume that all nodes being requested
-		//to are properly connected?
-		for (const edge of this.edges) {
-			if (
-				edge.getNodes().includes(this.name) &&
-				edge.getNodes().includes(node.getName())
-			) {
-				return edge.weight;
-			} else {
-				continue;
-			}
-		}
-		return -1;
-	}
+  addEdge(edge) {
+    this.edges.push(edge);
+  }
+  getName() {
+    return this.name;
+  }
+  getDistanceTo(node) {
+    //should this function assume that all nodes being requested
+    //to are properly connected?
+    for (const edge of this.edges) {
+      if (
+        edge.getNodes().includes(this.name) &&
+        edge.getNodes().includes(node.getName())
+      ) {
+        return edge.weight;
+      } else {
+        continue;
+      }
+    }
+    return -1;
+  }
 }
 
 class graphEdge {
-	constructor(weight, node1, node2, directed) {
-		this.weight = weight;
-		this.fromNode = node1;
-		this.toNode = node2;
-		this.directed = directed;
-	}
+  constructor(weight, node1, node2, directed) {
+    this.weight = weight;
+    this.fromNode = node1;
+    this.toNode = node2;
+    this.directed = directed;
+  }
 
-	getNodes() {
-		//returns the names of the nodes the edge attaches
-		return [this.fromNode.getName(), this.toNode.getName()];
-	}
-	getOppositeNode(node) {
-		if (
-			node.getName() != this.fromNode.getName() &&
-			node.getName() != this.toNode.getName()
-		) {
-			throw new Error("Invalid node");
-		}
-		return node.getName() === this.fromNode.getName() ? this.toNode : this.fromNode;
-	}
+  getNodes() {
+    //returns the names of the nodes the edge attaches
+    return [this.fromNode.getName(), this.toNode.getName()];
+  }
+  getOppositeNode(node) {
+    if (
+      node.getName() != this.fromNode.getName() &&
+      node.getName() != this.toNode.getName()
+    ) {
+      throw new Error("Invalid node");
+    }
+    return node.getName() === this.fromNode.getName()
+      ? this.toNode
+      : this.fromNode;
+  }
 }
 
 export function Dijkstras(graph, sourceNodeName) {
-	let queue = [];
-	let prev = {};
-	let dists = {};
+  let queue = [];
+  let prev = {};
+  let dists = {};
 
-	for (const node of graph.getNodes()) {
-		dists[node.getName()] = Infinity;
-		prev[node.getName()] = null;
-	}
+  for (const node of graph.getNodes()) {
+    dists[node.getName()] = Infinity;
+    prev[node.getName()] = null;
+  }
 
-	dists[sourceNodeName] = 0;
-	queue.push([0, graph.getNode(sourceNodeName)]);
+  dists[sourceNodeName] = 0;
+  queue.push([0, graph.getNode(sourceNodeName)]);
 
-	//  queue.push([1, "abc"]);
-	// queue.push([5, "blabhba"]);
-	// queue.push([3, "testing333"]);
-	// queue.push([8, "fdsfsdfdd"]);
-	// queue.sort((b, a) => a[0] - b[0]);
-	// queue.pop()
-	//console.log("Sorted queue: ", queue);
+  //  queue.push([1, "abc"]);
+  // queue.push([5, "blabhba"]);
+  // queue.push([3, "testing333"]);
+  // queue.push([8, "fdsfsdfdd"]);
+  // queue.sort((b, a) => a[0] - b[0]);
+  // queue.pop()
+  //console.log("Sorted queue: ", queue);
 
-	while (queue.length > 0) {
-		queue.sort((a, b) => {
-			a[0] - b[0];
-		});
-		const [currentDist, currentNode] = queue.pop();
-		if (currentDist > dists[currentNode.getName()]) {
-			continue;
-		}
-		const currentNodeNeighbors = graph.getNeighborNodes(currentNode);
-		// console.log(currentNodeNeighbors);
-		for (const neighbor of currentNodeNeighbors) {
-			const weight = graph.getDistanceBetween(
-				currentNode.getName(),
-				neighbor.getName()
-			);
-			const newDist = dists[currentNode.getName()] + weight;
-			// 
+  while (queue.length > 0) {
+    queue.sort((a, b) => {
+      a[0] - b[0];
+    });
+    const [currentDist, currentNode] = queue.pop();
+    if (currentDist > dists[currentNode.getName()]) {
+      continue;
+    }
+    const currentNodeNeighbors = graph.getNeighborNodes(currentNode);
+    // console.log(currentNodeNeighbors);
+    for (const neighbor of currentNodeNeighbors) {
+      const weight = graph.getDistanceBetween(
+        currentNode.getName(),
+        neighbor.getName(),
+      );
+      const newDist = dists[currentNode.getName()] + weight;
+      //
 
-			if (newDist < dists[neighbor.getName()]) {
-				dists[neighbor.getName()] = newDist;
-				prev[neighbor.getName()] = currentNode.getName();
-				queue.push([newDist, neighbor]);
-			}
-		}
-	}
+      if (newDist < dists[neighbor.getName()]) {
+        dists[neighbor.getName()] = newDist;
+        prev[neighbor.getName()] = currentNode.getName();
+        queue.push([newDist, neighbor]);
+      }
+    }
+  }
 
-	return [dists, prev];
+  return [dists, prev];
 }
