@@ -10,24 +10,21 @@
 </head>
 
 <body>
+  <div id="svg-container">
+  </div>
   <div class="drawer-content">
     <div class="selector-container">
       <select id="startLocSelector" class="loc-selector" onchange="">
         <option selected disabled hidden>
           &#128204;Select Start Location
         </option>
-      
+
       </select>
       <select id="endLocSelector" class="loc-selector" onchange="">
         <option selected disabled hidden>Select End Location</option>
       </select>
     </div>
-    <!-- <button onclick="connectCircles(['node-1', 'node-2', 'node-3'])">
-      Connect Circles
-    </button> -->
-    <div id="svg-container">
-      <!-- <g id="lines"></g> -->
-    </div>
+
     <script type="module">
       import { PathfindingAPI } from "./js/main.js"
       const startLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
