@@ -11,16 +11,13 @@
 
 <body>
   <div class="drawer-content">
-    <div class="selector-container">
-      <select id="startLocSelector" class="loc-selector" onchange="">
-        <option selected disabled hidden>
-          &#128204;Select Start Location
-        </option>
+    <div class="selector-container" id="menu">
+      <input type="text" placeholder="Select Start Location" id="startLocator" autocomplete="off"/>
+      <ul id="startSuggestions"></ul>
       
-      </select>
-      <select id="endLocSelector" class="loc-selector" onchange="">
-        <option selected disabled hidden>Select End Location</option>
-      </select>
+      <input type="text" placeholder="Select End Location" id="endLocator" autocomplete="off"/>
+      <ul id="endSuggestions"></ul>
+      
     </div>
     <!-- <button onclick="connectCircles(['node-1', 'node-2', 'node-3'])">
       Connect Circles
@@ -33,52 +30,126 @@
       const startLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
       const endLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
 
-      const startLocationSelector =
-        document.getElementById("startLocSelector");
-      const endLocationSelector = document.getElementById("endLocSelector");
+      const startLocationSelector = document.getElementById("startLocator");
+      const endLocationSelector = document.getElementById("endLocator");
+      const startList = document.getElementById("startSuggestions");
+      const endList = document.getElementById("endSuggestions");
 
-      startLocations.forEach((location) => {
-        addOptionToSelectTag(location, startLocationSelector);
+      let finalStartLocation = null;
+      let finalEndLocation = null;
+
+      startLocationSelector.addEventListener("keyup", (event) => {
+        const qry = startLocationSelector.value.toLowerCase();
+        const filteredLocations = startLocations.filter((item) => item.toLowerCase().includes(qry));
+        console.log(filteredLocations);
+        startList.innerHTML = "";
+
+        for (let i = 0; i < filteredLocations.length; i++) {
+          const li = document.createElement("li");
+          li.textContent = filteredLocations[i];
+          startList.appendChild(li);
+        }
+
+        console.log(startList);
+       
+
+        if (!qry.length) {
+          startList.innerHTML = "";
+        }
       });
-      endLocations.forEach((location) => {
-        addOptionToSelectTag(location, endLocationSelector);
+
+      startList.addEventListener("click", (event) => {
+
+        if (event.target.tagName === "LI") {
+          startLocationSelector.value = event.target.textContent;
+          startList.innerHTML = "";
+        }
+        finalStartLocation = "vnode-" + startLocationSelector.value;
+        if (finalStartLocation && finalEndLocation) {
+          const path = PathfindingAPI.findPath(finalStartLocation, finalEndLocation);
+
+          connectCircles(path);
+        }
+
       });
 
-      function addOptionToSelectTag(option, parent) {
-        //accepts a string and creates an option tag
-        const newOptionElement = document.createElement("option");
-        newOptionElement.textContent = option;
-        parent.appendChild(newOptionElement);
-      }
+        endLocationSelector.addEventListener("keyup", (event) => {
+        const qry = endLocationSelector.value.toLowerCase();
+        const filteredLocations = endLocations.filter((item) => item.toLowerCase().includes(qry));
+        console.log(filteredLocations);
+        endList.innerHTML = "";
 
-      let startLocation = null;
-      let endLocation = null;
+        for (let i = 0; i < filteredLocations.length; i++) {
+          const li = document.createElement("li");
+          li.textContent = filteredLocations[i];
+          endList.appendChild(li);
+        }
+
+        if (!qry.length) {
+          endList.innerHTML = "";
+        }
+      });
+
+      endList.addEventListener("click", (event) => {
+        if (event.target.tagName === "LI") {
+          endLocationSelector.value = event.target.textContent;
+          endList.innerHTML = "";
+        }
+        finalEndLocation = "vnode-" + endLocationSelector.value;
+        if (finalStartLocation && finalEndLocation) {
+          const path = PathfindingAPI.findPath(finalStartLocation, finalEndLocation);
+
+          connectCircles(path);
+        }
+      });
+
+
+
+
+      
+      // startLocations.forEach((location) => {
+      //   addOptionToSelectTag(location, startLocationSelector);
+      // });
+      // endLocations.forEach((location) => {
+      //   addOptionToSelectTag(location, endLocationSelector);
+      // });
+
+      // function addOptionToSelectTag(option, parent) {
+      //   //accepts a string and creates an option tag
+      //   const newOptionElement = document.createElement("option");
+      //   newOptionElement.textContent = option;
+      //   parent.appendChild(newOptionElement);
+      // }
+
+
 
 
 
 
       // Add event listeners here
-      endLocationSelector.addEventListener("change", (event) => {
-        endLocation = event.target.value;
-        endLocation = "vnode-" + endLocation
-        if (startLocation && endLocation) {
-          const path = PathfindingAPI.findPath(startLocation, endLocation);
+      // endLocationSelector.addEventListener("change", (event) => {
+      //   endLocation = event.target.value;
+      //   endLocation = "vnode-" + endLocationSelector.value;
+      //   console.log(endLocation);
+      //   if (startLocation && endLocation) {
+      //     const path = PathfindingAPI.findPath(startLocation, endLocation);
 
-          connectCircles(path);
-        }
-      });
-      startLocationSelector.addEventListener("change", (event) => {
-        startLocation = event.target.value;
-        startLocation = "vnode-" + startLocation
+      //     connectCircles(path);
+      //   }
+      // });
+      // startLocationSelector.addEventListener("change", (event) => {
+      //   startLocation = event.target.value;
+      //   startLocation = "vnode-" + startLocationSelector.value;
+      //   console.log(startLocation);
 
 
-        if (startLocation && endLocation) {
-          const path = PathfindingAPI.findPath(startLocation, endLocation);
+      //   if (startLocation && endLocation) {
+      //     const path = PathfindingAPI.findPath(startLocation, endLocation);
 
-          connectCircles(path);
+      //     connectCircles(path);
 
-        }
-      });
+      //   }
+      // });
 
 
       function connectCircles(ids) {

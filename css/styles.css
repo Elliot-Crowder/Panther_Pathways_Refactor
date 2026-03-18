@@ -23,25 +23,59 @@ html, body {
     z-index: 2;
     margin-top: 30px;
     margin-left: 30px;
+    background: radial-gradient(ellipse at center, #eee 0%, #ccc 100%);
 }
 
-.loc-selector {
-    margin-top: 7px;
-    font-size: 1.25rem;
+
+input {
+    width: 80%;
+    height: 4%;
+    margin: 8px auto;
+    display: block;
+    font-size: 18px;
+    border: #9c2424 solid 2px;
+    background-color: #fff;
+    outline: none;
+    border-radius: 10px;
+}
+
+#startLocator {
+    margin-top: 80px;
+    position: relative;
+}
+
+#endLocator {
+    position: relative;
+}
+
+#startSuggestions, #endSuggestions {
+    
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: scroll;
+    position: absolute;
     width: 100%;
-    padding: 10px 40px 10px 55px;
-    background-color: #f2f2f2;
-    color: #333;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    z-index: 1000;
+}
+
+#startSuggestions li, #endSuggestions li {
+    
+    border-top: 1px solid #999;
+    background-color: #f9f9f9;
+    padding: 15px 10px;
     cursor: pointer;
 }
 
-.loc-selector:hover,
-.loc-selector:focus {
-    border-color: #888;
-    outline: none;
+#startSuggestions li:hover, #endSuggestions li:hover {
+    background-color: #f1f1f1;
 }
+
+::placeholder {
+    color: #555;
+}
+
 
 .svg-container {
     z-index: 1;
