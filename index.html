@@ -165,7 +165,9 @@
       <span class="info-drawer-label">
         <span class="info-icon">ℹ</span>
         <span>More Info</span>
-        <span class="drawer-arrow" id="drawerArrow">∧</span>
+        <svg class="drawer-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"/>
+          </svg>
       </span>
     </div>
     <div class="info-drawer-divider"></div>
@@ -177,11 +179,9 @@
   <script>
     const infoDrawer = document.getElementById('infoDrawer');
     const infoDrawerHandle = document.getElementById('infoDrawerHandle');
-    const drawerArrow = document.getElementById('drawerArrow');
 
     infoDrawerHandle.addEventListener('click', () => {
-      const isOpen = infoDrawer.classList.toggle('open');
-      drawerArrow.textContent = isOpen ? '∨' : '∧';
+      infoDrawer.classList.toggle('open');
     });
   </script>
 </body>

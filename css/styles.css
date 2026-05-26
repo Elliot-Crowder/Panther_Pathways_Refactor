@@ -221,7 +221,12 @@ input:focus {
 }
 
 .drawer-arrow {
-    font-size: 1rem;
+    display: block;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-drawer.open .drawer-arrow {
+    transform: rotate(180deg);
 }
 
 .info-drawer-divider {
