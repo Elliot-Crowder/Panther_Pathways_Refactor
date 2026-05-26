@@ -1,0 +1,16 @@
+For future upkeep:
+    1. Update the Figma file with new node placements. Follow the naming convention
+    of "node-[node name]" for regular nodes and "vnode-[building name]" for virtual
+    nodes that are only meant to be exited from.
+    Node names with an E at the end, (ex: node-ACTE2, node-ACTE1) represent the
+    different entrances to that building. These nodes can also only be exited from
+    and carry a 0 weight to the building vnode.
+
+    2. After exporting the updated Figma file as an svg, db.json must also be updated
+    to reflect the changes made in Figma. To create a new edge, determine all possible
+    connections to the new node placed and connect them by following the structure:
+    { "from": *node-[new node name]*, "to": *node-[connecting node]*, "isVirtual": (false/true) },
+    ** Fill as true at the end if the new node that was created is a virtual node.
+
+    3. If new selections are to be added to the selection m,enu, update the variables
+    "startLocation" and "endLocation" found in index.html

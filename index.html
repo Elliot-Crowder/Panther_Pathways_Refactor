@@ -7,28 +7,43 @@
   <title>Document</title>
   <script type="module" src="js/main.js"></script>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Changa+One:ital@0;1&display=swap" rel="stylesheet">
 </head>
 
 <body>
+  <div id="svg-container">
+  </div>
   <div class="drawer-content">
     <div class="selector-container" id="menu">
+      <div class ="header-container">
+        <header>
+          <a href="https://scc.losrios.edu/">
+          <img class="scc-logo" src="scc-logo-final.png">
+          </a>
+          <div class="header-text">
+            <h1 class="pantherpathways-title"><a href="https://scc.losrios.edu/">PantherPathways</a></h1>
+            <h3 class="address-text">3835 Freeport Blvd. | Sacramento, CA 95822</h3>
+          </div>
+          
+        </header>
       <input type="text" placeholder="Select Start Location" id="startLocator" autocomplete="off"/>
       <ul id="startSuggestions"></ul>
-      
+        
       <input type="text" placeholder="Select End Location" id="endLocator" autocomplete="off"/>
       <ul id="endSuggestions"></ul>
-      
+      </div>
     </div>
-    <!-- <button onclick="connectCircles(['node-1', 'node-2', 'node-3'])">
-      Connect Circles
-    </button> -->
-    <div id="svg-container">
-      <!-- <g id="lines"></g> -->
-    </div>
+
     <script type="module">
       import { PathfindingAPI } from "./js/main.js"
-      const startLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
-      const endLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
+      const startLocations = ["PAS (Parking Structure)", "MAK (Makerspace)", "LUC (Lusk Center)", "CST (College Store)", "HSP (Hoos Swimming Pool)", "CDC (Child Development Center)", "PAN (Panther Cares)", "UNS (Union Stadium)", "NOG (North Gymnasium)", "STC (Student Center)", "SOG (South Gymnasium)", "BUS (Business Building)", "LRC (Learning Resource Center)", "NAS (Natural Sciences Building)", "MOH (Mohr Hall)", "RHS (Rodda Hall South)", "RHN (Rodda Hall North)", "CIC (City Cafe)", "FFA (Fischbacher Fine Arts Building)", "PAC (Performing Arts Center)", "STS (Student Services)", "SHW (Student Health & Wellness Center)", "COS (Cosmetology Building)", "TEC (Technology)", "ACT (Art Court Theatre)"]; //list of strings
+      const endLocations = ["PAS (Parking Structure)", "MAK (Makerspace)", "LUC (Lusk Center)", "CST (College Store)", "HSP (Hoos Swimming Pool)", "CDC (Child Development Center)", "PAN (Panther Cares)", "UNS (Union Stadium)", "NOG (North Gymnasium)", "STC (Student Center)", "SOG (South Gymnasium)", "BUS (Business Building)", "LRC (Learning Resource Center)", "NAS (Natural Sciences Building)", "MOH (Mohr Hall)", "RHS (Rodda Hall South)", "RHN (Rodda Hall North)", "CIC (City Cafe)", "FFA (Fischbacher Fine Arts Building)", "PAC (Performing Arts Center)", "STS (Student Services)", "SHW (Student Health & Wellness Center)", "COS (Cosmetology Building)", "TEC (Technology)", "ACT (Art Court Theatre)"]; //list of strings
+
+      startLocations.sort();
+      endLocations.sort();
+
 
       const startLocationSelector = document.getElementById("startLocator");
       const endLocationSelector = document.getElementById("endLocator");
@@ -62,9 +77,10 @@
 
         if (event.target.tagName === "LI") {
           startLocationSelector.value = event.target.textContent;
+        
           startList.innerHTML = "";
         }
-        finalStartLocation = "vnode-" + startLocationSelector.value;
+        finalStartLocation = "vnode-" + startLocationSelector.value.slice(0,3);
         if (finalStartLocation && finalEndLocation) {
           const path = PathfindingAPI.findPath(finalStartLocation, finalEndLocation);
 
@@ -95,7 +111,7 @@
           endLocationSelector.value = event.target.textContent;
           endList.innerHTML = "";
         }
-        finalEndLocation = "vnode-" + endLocationSelector.value;
+        finalEndLocation = "vnode-" + endLocationSelector.value.slice(0,3);
         if (finalStartLocation && finalEndLocation) {
           const path = PathfindingAPI.findPath(finalStartLocation, finalEndLocation);
 
@@ -104,6 +120,70 @@
       });
 
 
+      document.addEventListener("click", (event) => {
+        const clickedInsideStart =
+          startLocationSelector.contains(event.target) ||
+          startList.contains(event.target);
+
+        const clickedInsideEnd =
+          endLocationSelector.contains(event.target) ||
+          endList.contains(event.target);
+
+        if (!clickedInsideStart) {
+          startList.innerHTML = "";
+        }
+
+        if (!clickedInsideEnd) {
+          endList.innerHTML = "";
+        }
+      });
+
+      startLocator.addEventListener("click", (event) => {
+        startList.innerHTML = "";
+
+        startLocations.forEach((location) => {
+          const li = document.createElement("li");
+          li.textContent = location;
+          startList.appendChild(li);
+        });
+      });
+
+        endLocationSelector.addEventListener("click", (event) => {
+          endList.innerHTML = "";
+
+          endLocations.forEach((location) => {
+            const li = document.createElement("li");
+            li.textContent = location;
+            endList.appendChild(li);
+          });
+        });
+
+        startLocationSelector.addEventListener("focus", () => {
+          menu.style.display = "block";
+        });
+
+        endLocationSelector.addEventListener("focus", () => {
+          menu.style.display = "block";
+        });
+
+        // Mobile movement
+        // const svg = document.getElementById('svg-container');
+        // console.log(svg);
+        // let isDragging = false;
+
+        // svg.addEventListener('touchstart', () => { 
+        //   isDragging = true; 
+        //   console.log(isDragging);
+        // });
+        
+        // svg.addEventListener('touchend', () => { isDragging = false; });
+        // svg.addEventListener('touchmove', (e) => {
+        //   if (isDragging) {
+        //     const touch = e.touches[0];
+        //     svg.style.left = touch.clientX - 50 + 'px'; // Center on finger
+        //     svg.style.top = touch.clientY - 50 + 'px';
+        //   }
+        // });
 
 
       
@@ -178,7 +258,7 @@
             line.setAttribute("y1", y1);
             line.setAttribute("x2", x2);
             line.setAttribute("y2", y2);
-            line.setAttribute("stroke", "#0000FF");
+            line.setAttribute("stroke", "#DCAA00");
             line.setAttribute("stroke-width", "2");
             line.setAttribute("stroke-linecap", "round")
 

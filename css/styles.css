@@ -1,71 +1,130 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+html,
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .drawer-content {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	margin: 1rem;
+	display: flex;
 }
 
 .selector-container {
-    background-color: lightgrey;
-    width: 330px;
-    height: 800px;
-    border-radius: 5px;
+    background-color: rgb(240, 240, 240);
+    width: 350px;
+    height: 200px;
+    border-radius: 8px;
     position: absolute;
     z-index: 2;
-    margin-top: 30px;
-    margin-left: 30px;
-    background: radial-gradient(ellipse at center, #eee 0%, #ccc 100%);
+    box-shadow: 3px 3px 10px #757575;
 }
 
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 15px 10px 0px;
+}
+
+.scc-logo {
+    margin: 0px 5px 0px 5px;
+    height: 50px;
+    width: 50px;
+
+}
+
+.header-text {
+    margin: 0px;
+    line-height: 5px;
+}
+
+.pantherpathways-title {
+    font-size: 30px;
+    font-weight: bolder;
+    font-family: "Bricolage Grotesque", "Changa One", sans-serif;
+
+}
+
+.pantherpathways-title a {
+    text-decoration: none;
+    color: #8A0228;
+    display: block;
+}
+
+.address-text {
+    font-size: 12px;
+    display: block;
+}
 
 input {
     width: 80%;
-    height: 4%;
+    height: 35px;
     margin: 8px auto;
     display: block;
     font-size: 18px;
-    border: #9c2424 solid 2px;
-    background-color: #fff;
+    border: #8A0228 solid 1.95px;
+    background-color: #ffffff;
     outline: none;
-    border-radius: 10px;
+    border-top-right-radius: 6px; 
+    border-bottom-right-radius: 6px;
+
+
+    transition: 0.1s;
+}
+
+input:focus {
+    border: 3.5px solid #8A0228;
+    
+
 }
 
 #startLocator {
-    margin-top: 80px;
+    
     position: relative;
+    margin-bottom: 0;
+    padding-left: 10px;
+    margin-top: 0px;
 }
 
 #endLocator {
     position: relative;
+    margin-bottom: 0;
+    padding-left: 10px;
+    margin-top: 8px;
 }
 
 #startSuggestions, #endSuggestions {
     
     list-style: none;
     padding: 0;
-    margin: 0;
-    max-height: 200px;
+    margin-top: -3.75px;
+    margin-left: 27px;
+    max-height: 194px;
     overflow-y: scroll;
     position: absolute;
-    width: 100%;
+    width: 500px;
     z-index: 1000;
+
 }
+
+
 
 #startSuggestions li, #endSuggestions li {
     
-    border-top: 1px solid #999;
+    border-bottom: 1px solid #c0c0c0;
     background-color: #f9f9f9;
-    padding: 15px 10px;
+    padding: 10px 10px;
     cursor: pointer;
+    
+    
 }
 
 #startSuggestions li:hover, #endSuggestions li:hover {
@@ -78,9 +137,43 @@ input {
 
 
 .svg-container {
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
+@media (max-width: 750px) {
+    .selector-container {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100px;
+    }
+
+    input {
+        width: 100%;
+        height: 25px;
+        margin: -1.5px;
+        border-radius: 3px;
+    }
+
+    #endLocator {
+        margin: 0px;
+    }
+
+    #startSuggestions, #endSuggestions {
+        margin:0;
+        width: 100%;
+    }
+
+    .svg-container {
+        touch-action: none;
+        cursor: grab;
+    }
+
+
+
+
+}

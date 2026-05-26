@@ -259,6 +259,7 @@
     { "from": "node-WESTLOT2", "to": "node-WESTLOT1", "isVirtual": false },
     { "from": "node-WESTLOT1", "to": "node-PAN2", "isVirtual": false },
     { "from": "node-CDC1", "to": "node-WESTLOT2", "isVirtual": false },
+    { "from": "node-UNS1", "to": "node-PAN1", "isVirtual": false },
     { "from": "vnode-ACT", "to": "node-ACTE1", "isVirtual": true },
     { "from": "vnode-ACT", "to": "node-ACTE2", "isVirtual": true },
     { "from": "vnode-BUS", "to": "node-BUSE1", "isVirtual": true },
