@@ -5,9 +5,29 @@ import { graph, Dijkstras } from "./graph.js";
 let canvas = {};
 let canvasHeight;
 let canvasWidth;
-let scale = 1;
+let scale = 3;
 let myGraph;
+let beforePan;
 
+// beforePan = function (oldPan, newPan) {
+//   const realZoom = this.getSizes().realZoom;
+//   const pixelWidth = this.getSizes().viewBox.width * realZoom;
+//   const pixelHeight = this.getSizes().viewBox.height * realZoom;
+
+//   const minPanX = this.getSizes().width - pixelWidth;
+//   const minPanY = this.getSizes().height - pixelHeight;
+//   console.log("minx" + minPanX, "miny" + minPanY);
+//   console.log(this.getPan(), this.getZoom());
+//   console.log(this.getSizes());
+
+//   let newX = Math.min(0, Math.max(minPanX, newPan.x));
+//   let newY = Math.min(0, Math.max(minPanY, newPan.y));
+//   if (newX !== newPan.x || newY !== newPan.y) {
+//     this.disablePan();
+//     this.enablePan();
+//   }
+//   return { x: newX, y: newY };
+// };
 async function loadNodes(filePath, graph, canvas) {
   //Function loades nodes defined at *filePath and adds them to the *graph object
   //filePath needs to be a valid path to a properly formatted json file.
@@ -52,8 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
       loadNodes("db.json", myGraph, svg);
       canvasHeight = svg.height.baseVal.value;
       canvasWidth = svg.width.baseVal.value;
-      console.log(svg);
-      console.log(canvasWidth, canvasHeight);
       //create line group for the line overlay to be displayed
       const linesGroup = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -66,18 +84,24 @@ document.addEventListener("DOMContentLoaded", () => {
       // svg.appendChild(linesGroup, svg.querySelector("#main"));
       svg.querySelector("#main").appendChild(linesGroup);
       document.getElementById("svg-container").appendChild(svg);
-      //set transform to identity matrix
-      svg
-        .querySelector("#main")
-        .setAttribute("transform", "matrix(1, 0, 0, 1, 0, 0)");
+
       //scale svg to container size
-      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
       svg.style.width = "100%";
       svg.style.height = "100%";
-      getTransform();
+      // getTransform();
+      const mapPanZoom = svgPanZoom(svg, {
+        fit: true,
+        contain: true,
+        beforePan: beforePan,
+        minZoom: 1,
+      });
+      (() => {
+        const sizes = mapPanZoom.getSizes();
+        console.log(sizes.width / sizes.viewBox.width);
 
-      // console.log(myGraph);
-      // console.log(Dijkstras(myGraph, "node-NAS"));
+        // mapPanZoom.zoom(3);
+      })();
+      console.log(mapPanZoom.getSizes());
     });
 });
 
@@ -120,8 +144,8 @@ function panStart(e) {
   canvas = { mouseStart: transformed, transform: currentTransformation, sctm };
   document.addEventListener("mousemove", onPan);
   document.addEventListener("mouseup", endPan);
-  // document.getElementById("svg-container").addEventListener("mousemove", onPan);
-  // document.getElementById("svg-container").addEventListener("mouseup", endPan);
+  document.getElementById("svg-container").addEventListener("mousemove", onPan);
+  document.getElementById("svg-container").addEventListener("mouseup", endPan);
 }
 
 function constrainPan(x, y, scale) {
@@ -224,11 +248,11 @@ function onPan(e) {
     .getElementById("main")
     .setAttribute("transform", `matrix(${a}, ${b}, ${c}, ${d}, ${x}, ${y})`);
   // document
-  // 	.getElementById("main")
-  // 	.setAttribute(
-  // 		"transform",
-  // 		`matrix(${a}, ${b}, ${c}, ${d}, ${horizontalTranslation}, ${verticalTranslation})`
-  // 	);
+  //   .getElementById("main")
+  //   .setAttribute(
+  //     "transform",
+  //     `matrix(${a}, ${b}, ${c}, ${d}, ${horizontalTranslation}, ${verticalTranslation})`,
+  //   );
   canvas.mouseStart = currentMousePosition;
   canvas.transform = [a, b, c, d, x, y];
 }
@@ -238,12 +262,12 @@ function endPan(e) {
   document.removeEventListener("mousemove", onPan);
   document.removeEventListener("mouseup", endPan);
 
-  //   document
-  //     .getElementById("svg-container")
-  //     .removeEventListener("mousemove", onPan);
-  //   document
-  //     .getElementById("svg-container")
-  //     .removeEventListener("mouseup", endPan);
+  document
+    .getElementById("svg-container")
+    .removeEventListener("mousemove", onPan);
+  document
+    .getElementById("svg-container")
+    .removeEventListener("mouseup", endPan);
 }
 function getTransform() {
   const main = document.getElementById("main");
@@ -256,6 +280,8 @@ function getTransform() {
   const matrix = consolidated.matrix;
   return [matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f];
 }
+
+//PANNING ATTACH
 document.getElementById("svg-container").addEventListener("wheel", onZoom);
 document
   .getElementById("svg-container")

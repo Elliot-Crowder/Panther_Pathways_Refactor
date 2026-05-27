@@ -1,40 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="libs/svg-pan-zoom.min.js"></script>
+    <script type="module" src="main.js"></script>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <script type="module" src="main.js"></script>
-  <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<body>
-  <div class="drawer-content">
-    <div class="selector-container">
-      <select id="startLocSelector" class="loc-selector" onchange="">
-        <option selected disabled hidden>
-          &#128204;Select Start Location
-        </option>
-        <option>hi friends</option>
-      </select>
-      <select id="endLocSelector" class="loc-selector" onchange="">
-        <option selected disabled hidden>Select End Location</option>
-      </select>
+  <body>
+    <div class="drawer-content">
+      <div class="selector-container">
+        <select id="startLocSelector" class="loc-selector">
+          <option selected disabled hidden>
+            &#128204;Select Start Location
+          </option>
+        </select>
+        <select id="endLocSelector" class="loc-selector">
+          <option selected disabled hidden>Select End Location</option>
+        </select>
+      </div>
     </div>
-    <!-- <button onclick="connectCircles(['node-1', 'node-2', 'node-3'])">
-      Connect Circles
-    </button> -->
     <div id="svg-container">
       <!-- <g id="lines"></g> -->
     </div>
+    <footer class="footer"></footer>
     <script type="module">
-      import { PathfindingAPI } from "/main.js"
-      const startLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
-      const endLocations = ["PAS", "MAK", "LUC", "CST", "HSP", "CDC", "PAN", "UNS", "NOG", "STC", "SOG", "BUS", "LRC", "NAS", "MOH", "RHS", "RHN", "CIC", "FFA", "PAC", "STS", "SHW", "COS", "TEC", "ACT"]; //list of strings
+      import { PathfindingAPI } from "/main.js";
+      const startLocations = [
+        "PAS",
+        "MAK",
+        "LUC",
+        "CST",
+        "HSP",
+        "CDC",
+        "PAN",
+        "UNS",
+        "NOG",
+        "STC",
+        "SOG",
+        "BUS",
+        "LRC",
+        "NAS",
+        "MOH",
+        "RHS",
+        "RHN",
+        "CIC",
+        "FFA",
+        "PAC",
+        "STS",
+        "SHW",
+        "COS",
+        "TEC",
+        "ACT",
+      ]; //list of strings
+      const endLocations = [
+        "PAS",
+        "MAK",
+        "LUC",
+        "CST",
+        "HSP",
+        "CDC",
+        "PAN",
+        "UNS",
+        "NOG",
+        "STC",
+        "SOG",
+        "BUS",
+        "LRC",
+        "NAS",
+        "MOH",
+        "RHS",
+        "RHN",
+        "CIC",
+        "FFA",
+        "PAC",
+        "STS",
+        "SHW",
+        "COS",
+        "TEC",
+        "ACT",
+      ]; //list of strings
 
-      const startLocationSelector =
-        document.getElementById("startLocSelector");
+      const startLocationSelector = document.getElementById("startLocSelector");
       const endLocationSelector = document.getElementById("endLocSelector");
 
       startLocations.forEach((location) => {
@@ -54,13 +104,10 @@
       let startLocation = null;
       let endLocation = null;
 
-
-
-
       // Add event listeners here
       endLocationSelector.addEventListener("change", (event) => {
         endLocation = event.target.value;
-        endLocation = "vnode-" + endLocation
+        endLocation = "vnode-" + endLocation;
         if (startLocation && endLocation) {
           const path = PathfindingAPI.findPath(startLocation, endLocation);
 
@@ -69,17 +116,14 @@
       });
       startLocationSelector.addEventListener("change", (event) => {
         startLocation = event.target.value;
-        startLocation = "vnode-" + startLocation
-
+        startLocation = "vnode-" + startLocation;
 
         if (startLocation && endLocation) {
           const path = PathfindingAPI.findPath(startLocation, endLocation);
 
           connectCircles(path);
-
         }
       });
-
 
       function connectCircles(ids) {
         const svg = document.querySelector("svg");
@@ -101,7 +145,7 @@
 
             const line = document.createElementNS(
               "http://www.w3.org/2000/svg",
-              "line"
+              "line",
             );
             line.setAttribute("x1", x1);
             line.setAttribute("y1", y1);
@@ -109,13 +153,12 @@
             line.setAttribute("y2", y2);
             line.setAttribute("stroke", "#0000FF");
             line.setAttribute("stroke-width", "2");
-            line.setAttribute("stroke-linecap", "round")
+            line.setAttribute("stroke-linecap", "round");
 
             linesGroup.appendChild(line);
           }
         }
       }
     </script>
-</body>
-
+  </body>
 </html>
