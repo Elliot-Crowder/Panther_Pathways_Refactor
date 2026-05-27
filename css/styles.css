@@ -1,30 +1,64 @@
-html,
-body {
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
+/* ── Theme Variables ──────────────────────────────────────────────────────── */
+
+:root {
+    --bg-surface:    rgb(240, 240, 240);
+    --bg-input:      #ffffff;
+    --bg-suggestion: #f9f9f9;
+    --bg-hover:      #f1f1f1;
+    --brand:         #8A0228;
+    --border:        #c0c0c0;
+    --shadow:        3px 3px 10px #757575;
+    --shadow-inset:  0 -1px 4px #757575;
+    --text-primary:  #1a1a1a;
+    --text-muted:    #555;
 }
 
+[data-theme="dark"] {
+    --bg-surface:    #231b1e;
+    --bg-input:      #2d2325;
+    --bg-suggestion: #1e1518;
+    --bg-hover:      #3a2b2e;
+    --brand:         #f06070;  /* lightened SCC red — ~5.2:1 contrast on #231b1e (WCAG AA ✓) */
+    --border:        #4d3338;
+    --shadow:        3px 3px 10px rgba(0, 0, 0, 0.55);
+    --shadow-inset:  0 -1px 4px rgba(0, 0, 0, 0.55);
+    --text-primary:  #f2e8ea;  /* warm off-white — ~13.5:1 contrast on #231b1e (WCAG AAA ✓) */
+    --text-muted:    #8a6e73;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-primary);
+}
+
+/* ── Route Menu Overlay ───────────────────────────────────────────────────── */
+
 .drawer-content {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	margin: 1rem;
-	display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    margin: 1rem;
+    display: flex;
 }
 
 .selector-container {
-    background-color: rgb(240, 240, 240);
+    background-color: var(--bg-surface);
     width: 350px;
     height: 200px;
     border-radius: 8px;
     position: absolute;
     z-index: 2;
-    box-shadow: 3px 3px 10px #757575;
+    box-shadow: var(--shadow);
+    transition: background-color 0.25s, box-shadow 0.25s;
 }
 
 header {
@@ -38,7 +72,6 @@ header {
     margin: 0px 5px 0px 5px;
     height: 50px;
     width: 50px;
-
 }
 
 .header-text {
@@ -50,19 +83,53 @@ header {
     font-size: 30px;
     font-weight: bolder;
     font-family: "Bricolage Grotesque", "Changa One", sans-serif;
-
 }
 
 .pantherpathways-title a {
     text-decoration: none;
-    color: #8A0228;
+    color: var(--brand);
     display: block;
+    transition: color 0.25s;
 }
 
 .address-text {
     font-size: 12px;
     display: block;
+    color: var(--text-primary);
 }
+
+/* ── Theme Toggle Button ──────────────────────────────────────────────────── */
+
+.theme-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    transition: background-color 0.15s, color 0.25s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--bg-hover);
+}
+
+/* Moon shown in light mode; sun shown in dark mode */
+.theme-icon--sun  { display: none;  }
+.theme-icon--moon { display: block; }
+
+[data-theme="dark"] .theme-icon--sun  { display: block; }
+[data-theme="dark"] .theme-icon--moon { display: none;  }
+
+/* ── Inputs & Autocomplete ────────────────────────────────────────────────── */
 
 input {
     width: 80%;
@@ -70,24 +137,20 @@ input {
     margin: 8px auto;
     display: block;
     font-size: 18px;
-    border: #8A0228 solid 1.95px;
-    background-color: #ffffff;
+    border: var(--brand) solid 1.95px;
+    background-color: var(--bg-input);
+    color: var(--text-primary);
     outline: none;
-    border-top-right-radius: 6px; 
+    border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-
-
-    transition: 0.1s;
+    transition: border 0.1s, background-color 0.25s, color 0.25s;
 }
 
 input:focus {
-    border: 3.5px solid #8A0228;
-    
-
+    border: 3.5px solid var(--brand);
 }
 
 #startLocator {
-    
     position: relative;
     margin-bottom: 0;
     padding-left: 10px;
@@ -102,7 +165,6 @@ input:focus {
 }
 
 #startSuggestions, #endSuggestions {
-    
     list-style: none;
     padding: 0;
     margin-top: -3.75px;
@@ -112,37 +174,99 @@ input:focus {
     position: absolute;
     width: 500px;
     z-index: 1000;
-
 }
 
-
-
 #startSuggestions li, #endSuggestions li {
-    
-    border-bottom: 1px solid #c0c0c0;
-    background-color: #f9f9f9;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--bg-suggestion);
+    color: var(--text-primary);
     padding: 10px 10px;
     cursor: pointer;
-    
-    
+    transition: background-color 0.1s;
 }
 
 #startSuggestions li:hover, #endSuggestions li:hover {
-    background-color: #f1f1f1;
+    background-color: var(--bg-hover);
 }
 
 ::placeholder {
-    color: #555;
+    color: var(--text-muted);
 }
 
+/* ── SVG Map Container ────────────────────────────────────────────────────── */
+
+/* Hide pathfinding node circles visually while keeping them in the DOM.
+   visibility: hidden (not display: none) is used so that the elements remain
+   fully reachable via getElementById / getAttribute, which connectCircles
+   relies on to read cx/cy coordinates when drawing the route. */
+#nodes {
+    visibility: hidden;
+}
 
 .svg-container {
-	z-index: 10;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	touch-action: none; /* prevent browser scroll/pinch from intercepting touch events */
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    touch-action: none; /* prevent browser scroll/pinch from intercepting touch events */
 }
+
+/* ── SVG Map Dark Mode ────────────────────────────────────────────────────── */
+/* Background/environment layers are recolored for dark mode.
+   Buildings (#buildings), athletic fields (#athletic_fields), and colored
+   label icons are left untouched — they contrast naturally on the dark base.
+   Black-filled icons and dark strokes are inverted/lightened for visibility. */
+
+/* Canvas background (#F5F5F5) */
+[data-theme="dark"] #svg-container svg > rect:first-child {
+    fill: #1a1518;
+}
+
+/* Map base layer (#EEE9E9) */
+[data-theme="dark"] #background {
+    fill: #1e1a1b;
+}
+
+/* Grass: keep original bright fill (#9DD3AB — ~9.7:1 contrast on dark bg ✓);
+   only lighten the strokes so patch edges remain defined. */
+[data-theme="dark"] #grass_layers path,
+[data-theme="dark"] #grass_layers rect {
+    stroke: #5a9e72;
+}
+
+/* Campus circulation lines: original #0B00C1 / black → light lavender */
+[data-theme="dark"] #campus_lines path {
+    stroke: rgba(180, 190, 255, 0.65);
+}
+
+/* Street lines: original black / #0B00C1 → soft light neutral */
+[data-theme="dark"] #street_lines_etc path {
+    stroke: rgba(200, 200, 220, 0.5);
+}
+
+/* Railroads: lighten #6C6DAE to a readable light purple */
+[data-theme="dark"] #railroads path,
+[data-theme="dark"] #railroads_2 path {
+    stroke: #9a9bdd;
+}
+
+/* All-gender restrooms: invert black circle → light; triangle symbol → dark */
+[data-theme="dark"] #all_gender_restrooms circle {
+    fill: #e8e0e2;
+}
+[data-theme="dark"] #all_gender_restrooms path {
+    fill: #1a1518;
+}
+
+/* Motorcycle parking: invert black rect → light; "M" text → dark */
+[data-theme="dark"] #motorcycle_parking rect {
+    fill: #e8e0e2;
+}
+[data-theme="dark"] #motorcycle_parking path {
+    fill: #1a1518;
+}
+
+/* ── Responsive / Mobile ──────────────────────────────────────────────────── */
 
 @media (max-width: 750px) {
     .selector-container {
@@ -165,7 +289,7 @@ input:focus {
     }
 
     #startSuggestions, #endSuggestions {
-        margin:0;
+        margin: 0;
         width: 100%;
     }
 
@@ -174,18 +298,20 @@ input:focus {
     }
 }
 
-/* ── Info Drawer ──────────────────────────────────── */
+/* ── Info Drawer ──────────────────────────────────────────────────────────── */
+
 .info-drawer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 50vh;
-    background-color: rgb(240, 240, 240);
-    box-shadow: 0 -1px 4px #757575;
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-inset);
     z-index: 50;
     transform: translateY(calc(100% - 48px));
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s;
 }
 
 .info-drawer.open {
@@ -202,17 +328,18 @@ input:focus {
 }
 
 .info-drawer-handle:hover {
-    background-color: #f1f1f1;
+    background-color: var(--bg-hover);
 }
 
 .info-drawer-label {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #8A0228;
+    color: var(--brand);
     font-weight: 600;
     font-size: 1rem;
     font-family: "Bricolage Grotesque", Arial, sans-serif;
+    transition: color 0.25s;
 }
 
 .info-icon {
@@ -231,8 +358,9 @@ input:focus {
 
 .info-drawer-divider {
     height: 1px;
-    background-color: #c0c0c0;
+    background-color: var(--border);
     width: 100%;
+    transition: background-color 0.25s;
 }
 
 .info-drawer-body {
