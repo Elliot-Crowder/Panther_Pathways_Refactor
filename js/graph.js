@@ -21,17 +21,19 @@
  */
 
 export class graph {
-  constructor() {
-    this.nodes = [];
-    this.numNodes = 0;
-    this.edges = [];
-  }
+	constructor() {
+		this.nodes = [];
+		this.numNodes = 0;
+		this.edgeMap = new Map();
+
+	}
 
   getNodes() {
     return this.nodes;
   }
 
   getNode(nodeName) {
+
     for (const curr_node of this.nodes) {
       if (curr_node.getName() === nodeName) {
         return curr_node;
@@ -92,19 +94,50 @@ export class graph {
     return neighborNodes;
   }
 
-  addEdge(weight, node1Name, node2Name, directed) {
-    //add duplicate checker?
-    //we should assume that nodes have unique names and that weight is not a key identifier
-    const node1 = this.getNode(node1Name);
-    const node2 = this.getNode(node2Name);
-    const newEdge = new graphEdge(weight, node1, node2, directed);
-    node1.addEdge(newEdge);
-    node2.addEdge(newEdge);
-    this.edges.push(newEdge);
-  }
-  getEdges() {
-    return this.edges;
-  }
+	// addEdge(weight, node1Name, node2Name, directed) {
+	// 	//add duplicate checker?
+	// 	//we should assume that nodes have unique names and that weight is not a key identifier
+	// 	const node1 = this.getNode(node1Name);
+	// 	const node2 = this.getNode(node2Name);
+	// 	const newEdge = new graphEdge(weight, node1, node2, directed);
+	// 	node1.addEdge(newEdge);
+	// 	node2.addEdge(newEdge);
+	// 	this.edges.push(newEdge);
+	// }
+
+	createEdge(weight, node1Name, node2Name, directed) {
+
+		const node1 = this.getNode(node1Name);
+		const node2 = this.getNode(node2Name);
+		
+		let key;
+
+		if (directed) {
+			key = `${node1Name}->${node2Name}`;
+  			} 
+		else {
+    		const sorted = [node1Name, node2Name].sort();
+    		key = `${sorted[0]}<-->${sorted[1]}`;
+ 		 }
+
+     if (!this.edgeMap.has(key)) {
+      const newEdge = new graphEdge(weight, node1, node2, directed);
+      node1.addEdge(newEdge);
+      node2.addEdge(newEdge);
+      this.edgeMap.set(key, newEdge);
+      return;
+    }
+
+		 if (this.edgeMap.has(key)) {
+			console.log("Dupe edge: ", key);
+			return;
+		 }
+
+	}
+
+	getEdges() {
+		return this.edges;
+	}
 }
 
 class graphNode {

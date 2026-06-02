@@ -1,0 +1,242 @@
+html,
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.drawer-content {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	margin: 1rem;
+	display: flex;
+}
+
+.selector-container {
+    background-color: rgb(240, 240, 240);
+    width: 350px;
+    height: 200px;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 2;
+    box-shadow: 3px 3px 10px #757575;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 15px 10px 0px;
+}
+
+.scc-logo {
+    margin: 0px 5px 0px 5px;
+    height: 50px;
+    width: 50px;
+
+}
+
+.header-text {
+    margin: 0px;
+    line-height: 5px;
+}
+
+.pantherpathways-title {
+    font-size: 30px;
+    font-weight: bolder;
+    font-family: "Bricolage Grotesque", "Changa One", sans-serif;
+
+}
+
+.pantherpathways-title a {
+    text-decoration: none;
+    color: #8A0228;
+    display: block;
+}
+
+.address-text {
+    font-size: 12px;
+    display: block;
+}
+
+input {
+    width: 80%;
+    height: 35px;
+    margin: 8px auto;
+    display: block;
+    font-size: 18px;
+    border: #8A0228 solid 1.95px;
+    background-color: #ffffff;
+    outline: none;
+    border-top-right-radius: 6px; 
+    border-bottom-right-radius: 6px;
+
+
+    transition: 0.1s;
+}
+
+input:focus {
+    border: 3.5px solid #8A0228;
+    
+
+}
+
+#startLocator {
+    
+    position: relative;
+    margin-bottom: 0;
+    padding-left: 10px;
+    margin-top: 0px;
+}
+
+#endLocator {
+    position: relative;
+    margin-bottom: 0;
+    padding-left: 10px;
+    margin-top: 8px;
+}
+
+#startSuggestions, #endSuggestions {
+    
+    list-style: none;
+    padding: 0;
+    margin-top: -3.75px;
+    margin-left: 27px;
+    max-height: 194px;
+    overflow-y: scroll;
+    position: absolute;
+    width: 500px;
+    z-index: 1000;
+
+}
+
+
+
+#startSuggestions li, #endSuggestions li {
+    
+    border-bottom: 1px solid #c0c0c0;
+    background-color: #f9f9f9;
+    padding: 10px 10px;
+    cursor: pointer;
+    
+    
+}
+
+#startSuggestions li:hover, #endSuggestions li:hover {
+    background-color: #f1f1f1;
+}
+
+::placeholder {
+    color: #555;
+}
+
+
+.svg-container {
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	touch-action: none; /* prevent browser scroll/pinch from intercepting touch events */
+}
+
+@media (max-width: 750px) {
+    .selector-container {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100px;
+    }
+
+    input {
+        width: 100%;
+        height: 25px;
+        margin: -1.5px;
+        border-radius: 3px;
+    }
+
+    #endLocator {
+        margin: 0px;
+    }
+
+    #startSuggestions, #endSuggestions {
+        margin:0;
+        width: 100%;
+    }
+
+    .svg-container {
+        cursor: grab;
+    }
+}
+
+/* ── Info Drawer ──────────────────────────────────── */
+.info-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    background-color: rgb(240, 240, 240);
+    box-shadow: 0 -1px 4px #757575;
+    z-index: 50;
+    transform: translateY(calc(100% - 48px));
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-drawer.open {
+    transform: translateY(0);
+}
+
+.info-drawer-handle {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.info-drawer-handle:hover {
+    background-color: #f1f1f1;
+}
+
+.info-drawer-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8A0228;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: "Bricolage Grotesque", Arial, sans-serif;
+}
+
+.info-icon {
+    font-size: 1.1rem;
+    font-style: normal;
+}
+
+.drawer-arrow {
+    display: block;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-drawer.open .drawer-arrow {
+    transform: rotate(180deg);
+}
+
+.info-drawer-divider {
+    height: 1px;
+    background-color: #c0c0c0;
+    width: 100%;
+}
+
+.info-drawer-body {
+    padding: 1rem 1.5rem;
+    overflow-y: auto;
+    height: calc(50vh - 49px);
+}
